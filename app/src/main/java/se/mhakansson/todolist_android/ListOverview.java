@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +20,8 @@ public class ListOverview extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         try {
             socket = IO.socket("http://192.168.0.104:1337");
@@ -48,7 +49,10 @@ public class ListOverview extends ActionBarActivity {
 
             @Override
             public void call(Object... args) {
-                Log.d("MainActivity: ", "List Added");
+                Log.d("MainActivity: ", "List Added: ");
+                for (int i = 0; i < args.length; ++i) {
+                    Log.d("MainActivity: ", args[i].toString());
+                }
             }
 
         }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
