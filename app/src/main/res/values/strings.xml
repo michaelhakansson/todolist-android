@@ -2,7 +2,9 @@
 <resources>
 
     <string name="app_name">todolist-android</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="edit_list_name">Enter list name</string>
+    <string name="lists">Lists</string>
+    <string name="button_add">Add</string>
 
 </resources>

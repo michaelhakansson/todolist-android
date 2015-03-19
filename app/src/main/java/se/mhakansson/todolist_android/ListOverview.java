@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -20,7 +23,31 @@ public class ListOverview extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_overview);
 
+        String[] array = new String[]{"Apple", "Google"};
+        ViewGroup listContainer = (ViewGroup) findViewById(R.id.list_container);
+
+        for (String anArray : array) {
+            TextView text = new TextView(this);
+            final String textToSet = anArray;
+            text.setText(anArray);
+            text.setTextSize(20);
+            text.setClickable(true);
+
+            text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("Click", textToSet);
+                }
+            });
+
+            listContainer.addView(text);
+
+            //CheckBox checkBox = new CheckBox(this);
+            //checkBox.setText(array[i]);
+            //checkboxContainer.addView(checkBox);
+        }
 
 
         try {
@@ -50,9 +77,7 @@ public class ListOverview extends ActionBarActivity {
             @Override
             public void call(Object... args) {
                 Log.d("MainActivity: ", "List Added: ");
-                for (int i = 0; i < args.length; ++i) {
-                    Log.d("MainActivity: ", args[i].toString());
-                }
+                    Log.d("MainActivity: ", args[0].toString());
             }
 
         }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
