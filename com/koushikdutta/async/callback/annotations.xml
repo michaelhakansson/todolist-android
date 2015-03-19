@@ -1,0 +1,5 @@
+<root>
+    <item name='com.koushikdutta.async.callback.ConnectCallback'>
+        <annotation name='java.lang.annotation.Deprecated' />
+    </item>
+</root>
