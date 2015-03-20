@@ -86,6 +86,10 @@ public class ListOverview extends ActionBarActivity {
             try {
                 ViewGroup listContainer = (ViewGroup) findViewById(R.id.list_container);
 
+                int id = obj.getInt("id");
+                String name = obj.getString("name");
+
+                createListRow(listContainer, id, name);
                 Log.d("List id: ", Integer.toString(obj.getInt("id")));
                 Log.d("List name: ", obj.getString("name"));
             } catch (JSONException e) {
@@ -183,20 +187,11 @@ public class ListOverview extends ActionBarActivity {
             for (int i = 0; i < response.length(); ++i) {
                 try {
                     row = response.getJSONObject(i);
-                    final int id = row.getInt("id");
-                    final String name = row.getString("name");
+                    int id = row.getInt("id");
+                    String name = row.getString("name");
 
+                    createListRow(listContainer, id, name);
 
-                    TextView text = createListTextView(listContainer.getContext(), id, name);
-
-                    text.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Log.d("Click on id ", Integer.toString(id));
-                        }
-                    });
-
-                    listContainer.addView(text);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -205,13 +200,27 @@ public class ListOverview extends ActionBarActivity {
         }
     }
 
-    private TextView createListTextView(Context context, int id, String name) {
-        TextView text = new TextView(context);
+    private void createListRow(final ViewGroup view, final int id, String name) {
+        final TextView text = new TextView(view.getContext());
         text.setId(id);
         text.setText(name);
         text.setTextSize(20);
         text.setClickable(true);
-        return text;
+
+        text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Click on id ", Integer.toString(id));
+            }
+        });
+        runOnUiThread(new Runnable() {
+
+              @Override
+              public void run() {
+                  view.addView(text);
+              }
+        });
+
     }
 
 
