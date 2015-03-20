@@ -1,5 +1,6 @@
 package se.mhakansson.todolist_android;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -57,12 +58,11 @@ public class ListOverview extends ActionBarActivity {
     }
 
     private Emitter.Listener onConnect = new Emitter.Listener() {
-
         @Override
         public void call(Object... args) {
             Log.d("MainActivity: ", "socket connected");
 
-            // Subscribe to lists by
+            // Subscribe to lists by call to server API
             JSONObject obj = new JSONObject();
             try {
                 obj.put("url", "/lists/subscribe");
@@ -84,6 +84,8 @@ public class ListOverview extends ActionBarActivity {
             }
             Log.d("MainActivity: ", "List Added: ");
             try {
+                ViewGroup listContainer = (ViewGroup) findViewById(R.id.list_container);
+
                 Log.d("List id: ", Integer.toString(obj.getInt("id")));
                 Log.d("List name: ", obj.getString("name"));
             } catch (JSONException e) {
@@ -141,7 +143,6 @@ public class ListOverview extends ActionBarActivity {
     class DownloadLists extends AsyncTask<String, String, JSONArray> {
         @Override
         protected JSONArray doInBackground(String... uri) {
-            Log.d("Performing request", "HTTP REQUEST");
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse response;
             String responseString = null;
@@ -185,11 +186,8 @@ public class ListOverview extends ActionBarActivity {
                     final int id = row.getInt("id");
                     final String name = row.getString("name");
 
-                    TextView text = new TextView(listContainer.getContext());
-                    text.setId(id);
-                    text.setText(name);
-                    text.setTextSize(20);
-                    text.setClickable(true);
+
+                    TextView text = createListTextView(listContainer.getContext(), id, name);
 
                     text.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -205,6 +203,15 @@ public class ListOverview extends ActionBarActivity {
 
             }
         }
+    }
+
+    private TextView createListTextView(Context context, int id, String name) {
+        TextView text = new TextView(context);
+        text.setId(id);
+        text.setText(name);
+        text.setTextSize(20);
+        text.setClickable(true);
+        return text;
     }
 
 
