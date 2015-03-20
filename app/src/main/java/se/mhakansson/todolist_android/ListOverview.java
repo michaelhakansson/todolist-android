@@ -49,63 +49,69 @@ public class ListOverview extends ActionBarActivity {
         // Download all current lists and add to the view
         new DownloadLists().execute("http://192.168.0.104:1337/list");
 
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-
-            @Override
-            public void call(Object... args) {
-                Log.d("MainActivity: ", "socket connected");
-
-                // Subscribe to lists by
-                JSONObject obj = new JSONObject();
-                try {
-                    obj.put("url", "/lists/subscribe");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                socket.emit("get", obj);
-
-            }
-
-        }).on("listAdded", new Emitter.Listener() {
-
-            @Override
-            public void call(Object... args) {
-                JSONObject obj = null;
-                try {
-                    obj = new JSONObject(args[0].toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.d("MainActivity: ", "List Added: ");
-                try {
-                    Log.d("List id: ", Integer.toString(obj.getInt("id")));
-                    Log.d("List name: ", obj.getString("name"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-
-            @Override
-            public void call(Object... args) {
-                Log.d("MainActivity: ", "socket disconnected");
-            }
-
-        }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.d("MainActivity: ", "connection error");
-            }
-        });
+        socket.on(Socket.EVENT_CONNECT, onConnect);
+        socket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+        socket.on(Socket.EVENT_CONNECT_ERROR, onEventConnectError);
+        socket.on("listAdded", onListAdded);
         socket.connect();
     }
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+
+        @Override
+        public void call(Object... args) {
+            Log.d("MainActivity: ", "socket connected");
+
+            // Subscribe to lists by
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("url", "/lists/subscribe");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            socket.emit("get", obj);
+        }
+    };
+
+    private Emitter.Listener onListAdded = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(args[0].toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("MainActivity: ", "List Added: ");
+            try {
+                Log.d("List id: ", Integer.toString(obj.getInt("id")));
+                Log.d("List name: ", obj.getString("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("MainActivity: ", "socket disconnected");
+        }
+    };
+
+    private Emitter.Listener onEventConnectError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("MainActivity: ", "connection error");
+        }
+    };
 
     @Override
     protected void onDestroy() {
         Log.d("OnDestroy", "Called");
         super.onDestroy();
-        socket.disconnect();
+        socket.disconnect(); // Disconnect the socket
+        socket.off(); // Unsubscribe from everything
     }
 
     @Override
@@ -135,6 +141,7 @@ public class ListOverview extends ActionBarActivity {
     class DownloadLists extends AsyncTask<String, String, JSONArray> {
         @Override
         protected JSONArray doInBackground(String... uri) {
+            Log.d("Performing request", "HTTP REQUEST");
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse response;
             String responseString = null;
