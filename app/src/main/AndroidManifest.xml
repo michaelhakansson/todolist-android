@@ -18,6 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".DisplayListActivity"
+            android:label="@string/title_activity_display_list"
+            android:parentActivityName=".ListOverview" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="se.mhakansson.todolist_android.ListOverview" />
+        </activity>
     </application>
 
 </manifest>

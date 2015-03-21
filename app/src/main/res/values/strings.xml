@@ -6,5 +6,7 @@
     <string name="edit_list_name">Enter list name</string>
     <string name="lists">Lists</string>
     <string name="button_add">Add</string>
+    <string name="title_activity_display_list">Display List</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

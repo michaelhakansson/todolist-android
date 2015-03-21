@@ -2,6 +2,7 @@ package se.mhakansson.todolist_android;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
@@ -39,6 +40,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class ListOverview extends ActionBarActivity {
+    public final static String LIST_ID = "se.mhakansson.todolist_android.LIST_ID";
 
     private Socket socket;
 
@@ -270,8 +272,12 @@ public class ListOverview extends ActionBarActivity {
             name.setText(list.name);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View view) {
+                    // Make intent and send to the DisplayListActivity
+                    Intent intent = new Intent(view.getContext(), DisplayListActivity.class);
+                    intent.putExtra(LIST_ID, list.id);
                     Log.d("Click on item", Integer.toString(list.id));
+                    startActivity(intent);
                 }
             });
             // Return the completed view to render on screen
