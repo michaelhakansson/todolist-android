@@ -35,11 +35,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ListOverview extends ActionBarActivity {
 
     private Socket socket;
+
+    ArrayList<List> arrayOfLists;
     private ListsAdapter adapter;
+
     // Establish socket connection to server
     {
         try {
@@ -59,7 +64,7 @@ public class ListOverview extends ActionBarActivity {
 
 
         // Construct the data source
-        ArrayList<List> arrayOfLists = new ArrayList<List>();
+        arrayOfLists = new ArrayList<List>();
         // Create the adapter to convert the array to views
         adapter = new ListsAdapter(this, arrayOfLists);
         // Attach the adapter to a ListView
@@ -203,7 +208,6 @@ public class ListOverview extends ActionBarActivity {
         @Override
         protected void onPostExecute(JSONArray response) {
             super.onPostExecute(response);
-            JSONObject row = null;
 
             ArrayList<List> lists = List.fromJson(response);
             adapter.addAll(lists);
@@ -272,6 +276,18 @@ public class ListOverview extends ActionBarActivity {
             });
             // Return the completed view to render on screen
             return convertView;
+        }
+
+        // Override notification on changed data in order to sort before notifying
+        @Override
+        public void notifyDataSetChanged() {
+            Collections.sort(arrayOfLists, new Comparator<List>() {
+                public int compare(List lhs, List rhs) {
+                    return lhs.name.compareTo(rhs.name);
+                }
+            });
+
+            super.notifyDataSetChanged();
         }
     }
 
