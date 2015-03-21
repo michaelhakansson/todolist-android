@@ -40,12 +40,13 @@ public class DisplayListActivity extends ActionBarActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         // Add data locally to the list.
-        ListItem listToAdd = new ListItem(1, "Texten", false);
-        ListItem listToAdd2 = new ListItem(1, "Texten", false);
-        ListItem listToAdd3 = new ListItem(1, "Texten", false);
-        ListItem listToAdd4 = new ListItem(1, "Texten", false);
-        ListItem listToAdd5 = new ListItem(1, "Texten", false);
-        ListItem listToAdd6 = new ListItem(1, "Texten", false);
+        ListItem listToAdd = new ListItem(1, "Texten2", false);
+        ListItem listToAdd2 = new ListItem(1, "Texten3", false);
+        ListItem listToAdd3 = new ListItem(1, "Texten1", false);
+        ListItem listToAdd4 = new ListItem(1, "Texten4", false);
+        ListItem listToAdd5 = new ListItem(1, "Texten6", false);
+        ListItem listToAdd6 = new ListItem(1, "Texten5", false);
+        ListItem listToAdd7 = new ListItem(1, "Texten7", false);
 
         ArrayList<ListItem> lst = new ArrayList<ListItem>();
         lst.add(listToAdd);
@@ -63,9 +64,8 @@ public class DisplayListActivity extends ActionBarActivity {
         mData.add(listToAdd6);
 
 
-        // Update adapter
-//        mAdapter.addItem(mData.size()-1, listToAdd);
         mAdapter.updateList(lst);
+        mAdapter.addItem(listToAdd7);
 
 
 //        Intent intent = getIntent();
