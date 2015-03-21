@@ -1,14 +1,19 @@
 package se.mhakansson.todolist_android;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -29,10 +34,12 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class ListOverview extends ActionBarActivity {
 
     private Socket socket;
+    private ListsAdapter adapter;
     // Establish socket connection to server
     {
         try {
@@ -49,6 +56,15 @@ public class ListOverview extends ActionBarActivity {
 
         // Download all current lists and add to the view
         new DownloadLists().execute("http://192.168.0.104:1337/list");
+
+
+        // Construct the data source
+        ArrayList<List> arrayOfLists = new ArrayList<List>();
+        // Create the adapter to convert the array to views
+        adapter = new ListsAdapter(this, arrayOfLists);
+        // Attach the adapter to a ListView
+        ListView listView = (ListView) findViewById(R.id.list_container);
+        listView.setAdapter(adapter);
 
         socket.on(Socket.EVENT_CONNECT, onConnect);
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -83,18 +99,24 @@ public class ListOverview extends ActionBarActivity {
                 e.printStackTrace();
             }
             Log.d("MainActivity: ", "List Added: ");
+
             try {
-                ViewGroup listContainer = (ViewGroup) findViewById(R.id.list_container);
+                final List newList = new List(obj.getInt("id"), obj.getString("name"));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.add(newList);
+                    }
+                });
 
-                int id = obj.getInt("id");
-                String name = obj.getString("name");
-
-                createListRow(listContainer, id, name);
                 Log.d("List id: ", Integer.toString(obj.getInt("id")));
                 Log.d("List name: ", obj.getString("name"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
+
         }
     };
 
@@ -177,51 +199,80 @@ public class ListOverview extends ActionBarActivity {
             return responseJson;
         }
 
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
         protected void onPostExecute(JSONArray response) {
             super.onPostExecute(response);
             JSONObject row = null;
-            ViewGroup listContainer = (ViewGroup) findViewById(R.id.list_container);
 
-            // Handle each list in response
-            for (int i = 0; i < response.length(); ++i) {
-                try {
-                    row = response.getJSONObject(i);
-                    int id = row.getInt("id");
-                    String name = row.getString("name");
-
-                    createListRow(listContainer, id, name);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
+            ArrayList<List> lists = List.fromJson(response);
+            adapter.addAll(lists);
         }
     }
 
-    private void createListRow(final ViewGroup view, final int id, String name) {
-        final TextView text = new TextView(view.getContext());
-        text.setId(id);
-        text.setText(name);
-        text.setTextSize(20);
-        text.setClickable(true);
+    public static class List {
+        public int id;
+        public String name;
 
-        text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Click on id ", Integer.toString(id));
+        public List(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        // Constructor to convert JSON object into a Java class instance
+        public List(JSONObject object){
+            try {
+                this.id = object.getInt("id");
+                this.name = object.getString("name");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
-        runOnUiThread(new Runnable() {
+        }
 
-              @Override
-              public void run() {
-                  view.addView(text);
-              }
-        });
-
+        // Factory method to convert an array of JSON objects into a list of objects
+        // User.fromJson(jsonArray);
+        public static ArrayList<List> fromJson(JSONArray jsonObjects) {
+            ArrayList<List> lists = new ArrayList<List>();
+            for (int i = 0; i < jsonObjects.length(); i++) {
+                try {
+                    lists.add(new List(jsonObjects.getJSONObject(i)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return lists;
+        }
     }
 
+    public class ListsAdapter extends ArrayAdapter<List> {
+        public ListsAdapter(Context context, ArrayList<List> lists) {
+            super(context, 0, lists);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // Get the data item for this position
+            final List list = getItem(position);
+
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_list, parent, false);
+            }
+
+            // Lookup view for data population
+            TextView name = (TextView) convertView.findViewById(R.id.listName);
+
+            // Populate the data into the template view using the data object
+            name.setText(list.name);
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("Click on item", Integer.toString(list.id));
+                }
+            });
+            // Return the completed view to render on screen
+            return convertView;
+        }
+    }
 
 }
