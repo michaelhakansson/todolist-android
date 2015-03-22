@@ -1,6 +1,9 @@
 package se.mhakansson.todolist_android;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
@@ -14,9 +17,19 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
@@ -46,14 +59,17 @@ public class DisplayListActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        listId = intent.getIntExtra(ListOverviewActivity.LIST_ID, -1);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_list);
 
+        Intent intent = getIntent();
+        listId = intent.getIntExtra(ListOverviewActivity.LIST_ID, -1);
+
+        // Download all current items in the current list
+        new DownloadItems().execute(ListOverviewActivity.SERVER_ADDRESS + "/list/" + listId);
+        // Todo: implement the download items method
+
         // Initializing views.
-        mText = (EditText) findViewById(R.id.textEt);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
 
         // Setting the LayoutManager.
@@ -63,39 +79,6 @@ public class DisplayListActivity extends ActionBarActivity {
         // Setting the adapter.
         mAdapter = new CustomRecyclerAdapter();
         mRecyclerView.setAdapter(mAdapter);
-
-        // Add data locally to the list.
-        ListItem listToAdd = new ListItem(1, "Texten2", false);
-        ListItem listToAdd2 = new ListItem(1, "Texten3", false);
-        ListItem listToAdd3 = new ListItem(1, "Texten1", false);
-        ListItem listToAdd4 = new ListItem(1, "Texten4", false);
-        ListItem listToAdd5 = new ListItem(1, "Texten6", false);
-        ListItem listToAdd6 = new ListItem(1, "Texten5", false);
-        ListItem listToAdd7 = new ListItem(1, "Texten7", false);
-
-        ArrayList<ListItem> lst = new ArrayList<ListItem>();
-        lst.add(listToAdd);
-        lst.add(listToAdd2);
-        lst.add(listToAdd3);
-        lst.add(listToAdd4);
-        lst.add(listToAdd5);
-        lst.add(listToAdd6);
-
-        mData.add(listToAdd);
-        mData.add(listToAdd2);
-        mData.add(listToAdd3);
-        mData.add(listToAdd4);
-        mData.add(listToAdd5);
-        mData.add(listToAdd6);
-
-
-        mAdapter.updateList(lst);
-        mAdapter.addItem(listToAdd7);
-
-
-//        TextView textView = new TextView(this);
-//        textView.setText(Integer.toString(listId));
-//        setContentView(textView);
     }
 
 
@@ -201,6 +184,51 @@ public class DisplayListActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    // Downloads all lists asynchronous and loads them into the view
+    class DownloadItems extends AsyncTask<String, String, JSONArray> {
+        @Override
+        protected JSONArray doInBackground(String... uri) {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response;
+            String responseString = null;
+            JSONArray responseJson = null;
+            try {
+                response = httpclient.execute(new HttpGet(uri[0]));
+                StatusLine statusLine = response.getStatusLine();
+                if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    response.getEntity().writeTo(out);
+                    responseString = out.toString();
+                    out.close();
+                } else{
+                    //Closes the connection.
+                    response.getEntity().getContent().close();
+                    throw new IOException(statusLine.getReasonPhrase());
+                }
+            } catch (ClientProtocolException e) {
+                //TODO Handle problems..
+            } catch (IOException e) {
+                //TODO Handle problems..
+            }
+            try {
+                responseJson = new JSONArray(responseString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return responseJson;
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray response) {
+            super.onPostExecute(response);
+
+            ArrayList<ListItem> lists = ListItem.fromJson(response);
+            Log.d("DisplayListActivity json response",lists.toString());
+            mAdapter.updateList(lists);
+        }
     }
 
 }

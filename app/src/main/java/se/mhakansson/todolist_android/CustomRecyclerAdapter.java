@@ -72,6 +72,7 @@ public class CustomRecyclerAdapter
     }
 
     public void updateList(ArrayList<ListItem> data) {
+        Log.d("CustomRecyclerAdapter updateList data in parameter", data.toString());
         mArrayOfListItems = data;
         sortList();
         notifyDataSetChanged();

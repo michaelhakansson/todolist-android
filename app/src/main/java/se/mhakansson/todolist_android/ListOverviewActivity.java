@@ -62,7 +62,7 @@ public class ListOverviewActivity extends ActionBarActivity {
         setContentView(R.layout.activity_list_overview);
 
         // Download all current lists and add to the view
-        new DownloadLists().execute("http://192.168.0.104:1337/list");
+        new DownloadLists().execute(SERVER_ADDRESS + "/list");
 
 
         // Construct the data source
