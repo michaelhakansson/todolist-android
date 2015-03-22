@@ -1,9 +1,7 @@
 package se.mhakansson.todolist_android;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
@@ -11,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -40,14 +37,13 @@ public class DisplayListActivity extends ActionBarActivity {
     private CustomRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private EditText mText;
     private ArrayList<ListItem> mData = new ArrayList<>();
 
     // Id of the list currently viewed
     int listId;
 
     // Establish socket connection to server
-    private Socket socket;
+    public static Socket socket;
     {
         try {
             socket = IO.socket(ListOverviewActivity.SERVER_ADDRESS);
@@ -67,7 +63,6 @@ public class DisplayListActivity extends ActionBarActivity {
 
         // Download all current items in the current list
         new DownloadItems().execute(ListOverviewActivity.SERVER_ADDRESS + "/list/" + listId);
-        // Todo: implement the download items method
 
         // Initializing views.
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
@@ -133,7 +128,7 @@ public class DisplayListActivity extends ActionBarActivity {
             Log.d("Added item as json", obj.toString());
 
             try {
-                final ListItem newListItem = new ListItem(obj.getInt("id"), obj.getString("text"), obj.getBoolean("finished"));
+                final ListItem newListItem = new ListItem(obj.getInt("id"), obj.getInt("listId"), obj.getString("text"), obj.getBoolean("finished"));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -158,6 +153,15 @@ public class DisplayListActivity extends ActionBarActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            final ListItem updatedItem = new ListItem(obj);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.updateItem(updatedItem);
+                }
+            });
 
             // TODO: Change status of the checkbox
             Log.d("DisplayListActivity", "Item updated");
@@ -187,7 +191,6 @@ public class DisplayListActivity extends ActionBarActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     };
 
@@ -269,7 +272,7 @@ public class DisplayListActivity extends ActionBarActivity {
             super.onPostExecute(response);
 
             ArrayList<ListItem> lists = ListItem.fromJson(response);
-            Log.d("DisplayListActivity json response",lists.toString());
+            Log.d("DisplayListActivity json response", response.toString());
             mAdapter.updateList(lists);
         }
     }

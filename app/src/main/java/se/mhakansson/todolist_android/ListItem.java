@@ -8,11 +8,13 @@ import java.util.ArrayList;
 
 public class ListItem {
     public int id;
+    public int listId;
     public String text;
     public boolean finished;
 
-    public ListItem(int id, String name, boolean finished) {
+    public ListItem(int id, int listId, String name, boolean finished) {
         this.id = id;
+        this.listId = listId;
         this.text = name;
         this.finished = finished;
     }
@@ -21,6 +23,7 @@ public class ListItem {
     public ListItem(JSONObject object){
         try {
             this.id = object.getInt("id");
+            this.listId = object.getInt("list");
             this.text = object.getString("text");
             this.finished = object.getBoolean("finished");
         } catch (JSONException e) {

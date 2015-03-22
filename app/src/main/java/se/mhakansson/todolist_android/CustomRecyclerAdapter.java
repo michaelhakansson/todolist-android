@@ -5,6 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,8 +31,9 @@ public class CustomRecyclerAdapter
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final RecyclerViewHolder viewHolder, final int position) {
         viewHolder.text.setText(mArrayOfListItems.get(position).text);
+        viewHolder.checkbox.setChecked(mArrayOfListItems.get(position).finished);
 
         viewHolder.setClickListener(new RecyclerViewHolder.ClickListener() {
             @Override
@@ -40,6 +45,42 @@ public class CustomRecyclerAdapter
                     // View v at position pos is clicked.
                     Log.d("short Click", "list text: " + mArrayOfListItems.get(pos).text);
                 }
+            }
+        });
+
+        viewHolder.checkbox.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Log.d("CLICK ON CHECKBOX", Integer.toString(position));
+                boolean isChecked = viewHolder.checkbox.isChecked();
+
+                JSONObject obj = new JSONObject();
+
+                try {
+                    obj.put("url", "/item/update/" +
+                            mArrayOfListItems.get(position).id + "/" +
+                            isChecked + "/" +
+                            mArrayOfListItems.get(position).listId);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                DisplayListActivity.socket.emit("put", obj);
+            }
+        });
+
+        viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            /*
+             * This can be used if something is to happen every time a checkbox is changed.
+             * This is called every time the check box is changed, no matter if it is by
+             * clicking the checkbox or by updating the checkbox via the adapter.
+             */
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Log.d("CustomRecyclerAdapter checkbox changed", Integer.toString(position));
             }
         });
     }
@@ -85,18 +126,30 @@ public class CustomRecyclerAdapter
         notifyItemInserted(position);
     }
 
+    public void updateItem(ListItem item) {
+        Log.d("CustomRecyclerAdapter: ", "first in addItem");
+        int position = getItemIndexById(item.id);
+        mArrayOfListItems.get(position).finished = item.finished;
+        notifyItemChanged(position);
+    }
+
     public void removeItem(int id) {
-        int indexToRemove = -1;
-        int size = mArrayOfListItems.size();
-        for (int i = 0; i < size; ++i) {
-            if (mArrayOfListItems.get(i).id == id) {
-                indexToRemove = i;
-                break;
-            }
-        }
+        int indexToRemove = getItemIndexById(id);
         if (indexToRemove != -1) {
             mArrayOfListItems.remove(indexToRemove);
             notifyItemRemoved(indexToRemove);
         }
+    }
+
+    private int getItemIndexById(int id) {
+        int index = -1;
+        int size = mArrayOfListItems.size();
+        for (int i = 0; i < size; ++i) {
+            if (mArrayOfListItems.get(i).id == id) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 }

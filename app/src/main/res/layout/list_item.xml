@@ -7,12 +7,20 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
 
+
+    <CheckBox
+        android:id="@+id/finished_checkbox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2" />
+
     <TextView
         android:id="@+id/text"
         android:layout_width="0dp"
+        android:text="test"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_margin="8dp"/>
+        android:layout_margin="1dp"/>
 
 
 </LinearLayout>

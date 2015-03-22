@@ -2,25 +2,28 @@ package se.mhakansson.todolist_android;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class RecyclerViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener, View.OnLongClickListener {
 
     public TextView text;
+    public CheckBox checkbox;
 
     private ClickListener clickListener;
-
 
     public RecyclerViewHolder(View itemView) {
         super(itemView);
         text = (TextView) itemView.findViewById(R.id.text);
+        checkbox = (CheckBox) itemView.findViewById(R.id.finished_checkbox);
 
         // We set listeners to the whole item view, but we could also
-        // specify listeners for the title or the icon.
-        itemView.setOnClickListener(this);
-        itemView.setOnLongClickListener(this);
+        // specify listeners for the different objects
+        text.setOnClickListener(this);
+        text.setOnLongClickListener(this);
     }
+
 
     /* Interface for handling clicks - both normal and long ones. */
     public interface ClickListener {
@@ -49,7 +52,6 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder
 
     @Override
     public boolean onLongClick(View v) {
-
         // If long clicked, passed last variable as true.
         clickListener.onClick(v, getPosition(), true);
         return true;
