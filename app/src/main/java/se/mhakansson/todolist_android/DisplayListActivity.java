@@ -97,8 +97,8 @@ public class DisplayListActivity extends ActionBarActivity {
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         socket.on(Socket.EVENT_CONNECT_ERROR, onEventConnectError);
         socket.on("itemAdded", onItemAdded);
-        // Todo: updatedItem
-        // Todo: itemRemoved
+        socket.on("updatedItem", onItemUpdated);
+        socket.on("itemRemoved", onItemRemoved);
         socket.connect();
         super.onResume();
     }
@@ -148,6 +148,49 @@ public class DisplayListActivity extends ActionBarActivity {
             }
         }
     };
+
+    private Emitter.Listener onItemUpdated = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(args[0].toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // TODO: Change status of the checkbox
+            Log.d("DisplayListActivity", "Item updated");
+            Log.d("DisplayListActivity", obj.toString());
+        }
+    };
+
+    private Emitter.Listener onItemRemoved = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(args[0].toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                final int idOfItemToRemove = obj.getInt("id");
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.removeItem(idOfItemToRemove);
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
 
     private Emitter.Listener onDisconnect = new Emitter.Listener() {
         @Override

@@ -85,8 +85,18 @@ public class CustomRecyclerAdapter
         notifyItemInserted(position);
     }
 
-    public void removeItem(int position) {
-        mArrayOfListItems.remove(position);
-        notifyItemRemoved(position);
+    public void removeItem(int id) {
+        int indexToRemove = -1;
+        int size = mArrayOfListItems.size();
+        for (int i = 0; i < size; ++i) {
+            if (mArrayOfListItems.get(i).id == id) {
+                indexToRemove = i;
+                break;
+            }
+        }
+        if (indexToRemove != -1) {
+            mArrayOfListItems.remove(indexToRemove);
+            notifyItemRemoved(indexToRemove);
+        }
     }
 }
