@@ -17,6 +17,8 @@ import java.util.Comparator;
 public class CustomRecyclerAdapter
         extends RecyclerView.Adapter<RecyclerViewHolder> {
 
+    private static String TAG = "CustomRecyclerAdapter";
+
     private ArrayList<ListItem> mArrayOfListItems = new ArrayList<ListItem>();
 
     public CustomRecyclerAdapter() {
@@ -52,7 +54,7 @@ public class CustomRecyclerAdapter
 
             @Override
             public void onClick(View v) {
-                Log.d("CLICK ON CHECKBOX", Integer.toString(position));
+                Log.d(TAG, "CLICK ON CHECKBOX " + Integer.toString(position));
                 boolean isChecked = viewHolder.checkbox.isChecked();
 
                 JSONObject obj = new JSONObject();
@@ -62,6 +64,25 @@ public class CustomRecyclerAdapter
                             mArrayOfListItems.get(position).id + "/" +
                             isChecked + "/" +
                             mArrayOfListItems.get(position).listId);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                DisplayListActivity.socket.emit("put", obj);
+            }
+        });
+
+        viewHolder.remove_button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "CLICK ON BUTTON " + Integer.toString(position));
+
+                JSONObject obj = new JSONObject();
+
+                try {
+                    obj.put("url", "/item/remove/" + mArrayOfListItems.get(position).id);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -113,21 +134,21 @@ public class CustomRecyclerAdapter
     }
 
     public void updateList(ArrayList<ListItem> data) {
-        Log.d("CustomRecyclerAdapter updateList data in parameter", data.toString());
+        Log.d(TAG, "updateList data in parameter " + data.toString());
         mArrayOfListItems = data;
         sortList();
         notifyDataSetChanged();
     }
 
     public void addItem(ListItem item) {
-        Log.d("CustomRecyclerAdapter: ", "first in addItem");
+        Log.d(TAG, "first in addItem");
         int position = getIndexToInsertInto(item);
         mArrayOfListItems.add(position, item);
         notifyItemInserted(position);
     }
 
     public void updateItem(ListItem item) {
-        Log.d("CustomRecyclerAdapter: ", "first in addItem");
+        Log.d(TAG, "first in addItem");
         int position = getItemIndexById(item.id);
         mArrayOfListItems.get(position).finished = item.finished;
         notifyItemChanged(position);

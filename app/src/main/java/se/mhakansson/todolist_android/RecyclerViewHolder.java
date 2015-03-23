@@ -2,6 +2,7 @@ package se.mhakansson.todolist_android;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -10,6 +11,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder
 
     public TextView text;
     public CheckBox checkbox;
+    public Button remove_button;
 
     private ClickListener clickListener;
 
@@ -17,6 +19,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder
         super(itemView);
         text = (TextView) itemView.findViewById(R.id.text);
         checkbox = (CheckBox) itemView.findViewById(R.id.finished_checkbox);
+        remove_button = (Button) itemView.findViewById(R.id.remove_button);
 
         // We set listeners to the whole item view, but we could also
         // specify listeners for the different objects
