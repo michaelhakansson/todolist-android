@@ -24,17 +24,17 @@ android:focusableInTouchMode="true">
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/edit_list_name"
+            android:id="@+id/add_list_text_field"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/edit_list_name" />
 
         <Button
+            android:id="@+id/button_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_add"
-            android:id="@+id/button_add" />
+            android:text="@string/button_add" />
     </LinearLayout>
 
     <ListView

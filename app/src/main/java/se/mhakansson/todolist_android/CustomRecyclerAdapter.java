@@ -95,6 +95,7 @@ public class CustomRecyclerAdapter
             }
         });
 
+
         viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             /*
              * This can be used if something is to happen every time a checkbox is changed.

@@ -22,9 +22,9 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder
         remove_button = (Button) itemView.findViewById(R.id.remove_button);
 
         // We set listeners to the whole item view, but we could also
-        // specify listeners for the different objects
-        text.setOnClickListener(this);
-        text.setOnLongClickListener(this);
+        // specify listeners for the different objects by changing 'itemView' to something else.
+        itemView.setOnClickListener(this);
+        itemView.setOnLongClickListener(this);
     }
 
 

@@ -1,5 +1,6 @@
 package se.mhakansson.todolist_android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +10,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -74,6 +79,36 @@ public class DisplayListActivity extends ActionBarActivity {
         // Setting the adapter.
         mAdapter = new CustomRecyclerAdapter();
         mRecyclerView.setAdapter(mAdapter);
+
+        // Set click listener for adding new items
+        Button add_list_button = (Button) findViewById(R.id.add_item_button);
+        add_list_button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Log.d("DisplayListActivity", "Click on add_item_button");
+
+                JSONObject obj = new JSONObject();
+                EditText textField = (EditText) findViewById(R.id.add_item_text_field);
+
+                try {
+                    String text = String.valueOf(textField.getText());
+                    Log.d("DisplayListActivity", "Text in text field: " + text);
+                    if (text != null) {
+                        obj.put("url", "/item/create/" + listId + "/" + text);
+                        DisplayListActivity.socket.emit("post", obj);
+
+                        // Clear text field and remove focus from keyboard
+                        textField.setText("");
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(textField.getWindowToken(), 0);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
 

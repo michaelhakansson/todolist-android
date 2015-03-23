@@ -14,17 +14,18 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/edit_list_name"
+            android:id="@+id/add_item_text_field"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:imeOptions="actionGo"
             android:hint="@string/enter_item_text" />
 
         <Button
+            android:id="@+id/add_item_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_add"
-            android:id="@+id/button_add" />
+            android:text="@string/button_add" />
     </LinearLayout>
 
 
