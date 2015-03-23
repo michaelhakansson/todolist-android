@@ -7,7 +7,6 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
 
-
     <CheckBox
         android:id="@+id/finished_checkbox"
         android:layout_width="0dp"
@@ -20,7 +19,16 @@
         android:text="test"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_margin="1dp"/>
+        android:layout_margin="1dp" />
 
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:text="-"
+        android:id="@+id/remove_button"
+        android:background="@drawable/round_button"
+        android:textColor="#fff"
+        android:textSize="25sp" />
 
 </LinearLayout>
+

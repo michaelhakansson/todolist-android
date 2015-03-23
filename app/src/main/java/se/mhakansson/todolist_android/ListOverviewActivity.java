@@ -41,7 +41,7 @@ import java.util.Comparator;
 
 public class ListOverviewActivity extends ActionBarActivity {
     public final static String LIST_ID = "se.mhakansson.todolist_android.LIST_ID";
-    public final static String SERVER_ADDRESS = "http://192.168.0.104:1337";
+    public final static String SERVER_ADDRESS = "http://192.168.1.103:1337";
 
     ArrayList<List> arrayOfLists;
     private ListsAdapter adapter;
