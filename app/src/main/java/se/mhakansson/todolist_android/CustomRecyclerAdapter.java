@@ -37,6 +37,9 @@ public class CustomRecyclerAdapter
         viewHolder.text.setText(mArrayOfListItems.get(position).text);
         viewHolder.checkbox.setChecked(mArrayOfListItems.get(position).finished);
 
+        final int id = mArrayOfListItems.get(position).id;
+        final int listId = mArrayOfListItems.get(position).listId;
+
         viewHolder.setClickListener(new RecyclerViewHolder.ClickListener() {
             @Override
             public void onClick(View v, int pos, boolean isLongClick) {
@@ -61,9 +64,9 @@ public class CustomRecyclerAdapter
 
                 try {
                     obj.put("url", "/item/update/" +
-                            mArrayOfListItems.get(position).id + "/" +
+                            id + "/" +
                             isChecked + "/" +
-                            mArrayOfListItems.get(position).listId);
+                            listId);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -82,7 +85,7 @@ public class CustomRecyclerAdapter
                 JSONObject obj = new JSONObject();
 
                 try {
-                    obj.put("url", "/item/remove/" + mArrayOfListItems.get(position).id);
+                    obj.put("url", "/item/remove/" + id);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
