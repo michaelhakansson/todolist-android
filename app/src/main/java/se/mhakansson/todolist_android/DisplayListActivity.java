@@ -128,7 +128,7 @@ public class DisplayListActivity extends ActionBarActivity {
             Log.d("Added item as json", obj.toString());
 
             try {
-                final ListItem newListItem = new ListItem(obj.getInt("id"), obj.getInt("listId"), obj.getString("text"), obj.getBoolean("finished"));
+                final ListItem newListItem = new ListItem(obj.getInt("id"), obj.getInt("list"), obj.getString("text"), obj.getBoolean("finished"));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
