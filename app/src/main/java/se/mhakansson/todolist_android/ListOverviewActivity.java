@@ -118,6 +118,45 @@ public class ListOverviewActivity extends ActionBarActivity {
         }
     };
 
+    private Emitter.Listener onListRemoved = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(args[0].toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("ListOverviewActivity", "List Removed " + obj.toString());
+
+            try {
+                //final List listToRemove = new List(obj.getInt("id"), obj.getString("name"));
+                final List listToRemove = getListById(obj.getInt("id"));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.remove(listToRemove);
+                    }
+                });
+
+                Log.d("List id: ", Integer.toString(obj.getInt("id")));
+                Log.d("List name: ", listToRemove.name);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private List getListById(int id) {
+        int size = arrayOfLists.size();
+        for (int i = 0; i < size; ++i) {
+            if (arrayOfLists.get(i).id == id) {
+                return arrayOfLists.get(i);
+            }
+        }
+        return null;
+    }
+
     private Emitter.Listener onDisconnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -153,6 +192,7 @@ public class ListOverviewActivity extends ActionBarActivity {
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         socket.on(Socket.EVENT_CONNECT_ERROR, onEventConnectError);
         socket.on("listAdded", onListAdded);
+        socket.on("listRemoved", onListRemoved);
         socket.connect();
         super.onResume();
     }

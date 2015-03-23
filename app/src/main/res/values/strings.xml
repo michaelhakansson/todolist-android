@@ -8,5 +8,6 @@
     <string name="button_add">Add</string>
     <string name="title_activity_display_list">Display List</string>
     <string name="hello_world">Hello world!</string>
+    <string name="enter_item_text">Enter item text</string>
 
 </resources>
