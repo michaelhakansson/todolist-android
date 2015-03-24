@@ -246,8 +246,6 @@ public class DisplayListActivity extends ActionBarActivity {
     protected void onDestroy() {
         Log.d("DisplayActivity", "onDestroy called");
         super.onDestroy();
-        socket.disconnect(); // Disconnect the socket
-        socket.off(); // Unsubscribe from everything
     }
 
     @Override

@@ -127,12 +127,15 @@ public class ListOverviewActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d("ListOverviewActivity", "onResume called");
+
+        // Listen to events
         socket.on(Socket.EVENT_CONNECT, onConnect);
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         socket.on(Socket.EVENT_CONNECT_ERROR, onEventConnectError);
         socket.on("listAdded", onListAdded);
         socket.on("listRemoved", onListRemoved);
         socket.connect();
+
         super.onResume();
     }
 
