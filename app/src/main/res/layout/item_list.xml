@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+android:orientation="horizontal"
+android:layout_width="match_parent"
+android:layout_height="?attr/listPreferredItemHeight"
+android:gravity="center_vertical"
+android:paddingLeft="8dp"
+android:paddingRight="8dp">
+
+
     <TextView
-        android:id="@+id/listName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/list_name"
         android:text="Name"
-        android:textSize="20sp" />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="1dp" />
+
+    <Button
+        android:id="@+id/remove_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:text="-"
+        android:background="@drawable/round_button"
+        android:textColor="#fff"
+        android:textSize="25sp" />
+
 </LinearLayout>

@@ -42,8 +42,6 @@ public class DisplayListActivity extends ActionBarActivity {
     private DisplayListCustomRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private ArrayList<ListItem> mData = new ArrayList<>();
-
     // Id of the list currently viewed
     int listId;
 
@@ -307,7 +305,7 @@ public class DisplayListActivity extends ActionBarActivity {
             super.onPostExecute(response);
 
             ArrayList<ListItem> lists = ListItem.fromJson(response);
-            Log.d("DisplayListActivity json response", response.toString());
+            Log.d("DisplayListActivity", "JSON response " + response.toString());
             mAdapter.updateList(lists);
         }
     }
