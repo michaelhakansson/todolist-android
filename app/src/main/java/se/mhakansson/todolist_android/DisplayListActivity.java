@@ -39,7 +39,7 @@ import java.util.ArrayList;
 public class DisplayListActivity extends ActionBarActivity {
 
     private RecyclerView mRecyclerView;
-    private CustomRecyclerAdapter mAdapter;
+    private DisplayListCustomRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private ArrayList<ListItem> mData = new ArrayList<>();
@@ -77,7 +77,7 @@ public class DisplayListActivity extends ActionBarActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Setting the adapter.
-        mAdapter = new CustomRecyclerAdapter();
+        mAdapter = new DisplayListCustomRecyclerAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
         // Set click listener for adding new items

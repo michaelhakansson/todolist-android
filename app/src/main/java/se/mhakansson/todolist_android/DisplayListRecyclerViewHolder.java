@@ -6,7 +6,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class RecyclerViewHolder extends RecyclerView.ViewHolder
+public class DisplayListRecyclerViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener, View.OnLongClickListener {
 
     public TextView text;
@@ -15,7 +15,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder
 
     private ClickListener clickListener;
 
-    public RecyclerViewHolder(View itemView) {
+    public DisplayListRecyclerViewHolder(View itemView) {
         super(itemView);
         text = (TextView) itemView.findViewById(R.id.text);
         checkbox = (CheckBox) itemView.findViewById(R.id.finished_checkbox);

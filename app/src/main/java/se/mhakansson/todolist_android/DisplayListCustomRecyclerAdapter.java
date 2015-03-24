@@ -14,33 +14,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class CustomRecyclerAdapter
-        extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class DisplayListCustomRecyclerAdapter
+        extends RecyclerView.Adapter<DisplayListRecyclerViewHolder> {
 
-    private static String TAG = "CustomRecyclerAdapter";
+    private static String TAG = "DisplayListCustomRecyclerAdapter";
 
     private ArrayList<ListItem> mArrayOfListItems = new ArrayList<ListItem>();
 
-    public CustomRecyclerAdapter() {
+    public DisplayListCustomRecyclerAdapter() {
         // Pass context or other static stuff that will be needed.
     }
 
     @Override
-    public RecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
+    public DisplayListRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View itemView = inflater.inflate(R.layout.list_item, viewGroup, false);
-        return new RecyclerViewHolder(itemView);
+        return new DisplayListRecyclerViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final DisplayListRecyclerViewHolder viewHolder, final int position) {
         viewHolder.text.setText(mArrayOfListItems.get(position).text);
         viewHolder.checkbox.setChecked(mArrayOfListItems.get(position).finished);
 
         final int id = mArrayOfListItems.get(position).id;
         final int listId = mArrayOfListItems.get(position).listId;
 
-        viewHolder.setClickListener(new RecyclerViewHolder.ClickListener() {
+        viewHolder.setClickListener(new DisplayListRecyclerViewHolder.ClickListener() {
             @Override
             public void onClick(View v, int pos, boolean isLongClick) {
                 if (isLongClick) {
@@ -105,7 +105,7 @@ public class CustomRecyclerAdapter
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //Log.d("CustomRecyclerAdapter checkbox changed", Integer.toString(position));
+                //Log.d("DisplayListCustomRecyclerAdapter checkbox changed", Integer.toString(position));
             }
         });
     }
