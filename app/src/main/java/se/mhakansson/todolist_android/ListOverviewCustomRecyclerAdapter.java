@@ -87,7 +87,7 @@ public class ListOverviewCustomRecyclerAdapter
     public void sortList() {
         Collections.sort(mArrayOfLists, new Comparator<List>() {
             public int compare(List lhs, List rhs) {
-                return lhs.name.compareTo(rhs.name);
+                return lhs.name.compareToIgnoreCase(rhs.name);
             }
         });
     }

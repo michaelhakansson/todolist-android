@@ -118,7 +118,7 @@ public class DisplayListCustomRecyclerAdapter
     public void sortList() {
         Collections.sort(mArrayOfListItems, new Comparator<ListItem>() {
             public int compare(ListItem lhs, ListItem rhs) {
-                return lhs.text.compareTo(rhs.text);
+                return lhs.text.compareToIgnoreCase(rhs.text);
             }
         });
     }
